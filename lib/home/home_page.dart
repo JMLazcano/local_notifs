@@ -1,6 +1,8 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:push_notifs_o2021/books.dart';
+import 'package:push_notifs_o2021/utils/constants_utils.dart';
 import 'package:push_notifs_o2021/utils/notification_util.dart';
 
 import 'notif_menu.dart';
@@ -15,26 +17,26 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   void initState() {
+    //Notification
     AwesomeNotifications().requestPermissionToSendNotifications().then(
       (isAllowed) {
         if (isAllowed) {
-          // escuchar por notificaciones con puro texto
+          // Listen through text
           AwesomeNotifications().displayedStream.listen(
             (notificationMsg) {
               print(notificationMsg);
             },
           );
 
-          // escuchar por notificaciones con botones/acciones
+          // Listen to Notification
           AwesomeNotifications().actionStream.listen(
             (notificationAction) {
               if (!StringUtils.isNullOrEmpty(
                   notificationAction.buttonKeyInput)) {
-                // respuesta de un mensaje input de texto
+                // Response
                 print(notificationAction);
               } else {
-                // abrir pantalla.
-                // logica para hacer algo cuando presienen el boton
+                //Window
                 processDefaultActionRecieved(notificationAction);
               }
             },
@@ -45,7 +47,20 @@ class _HomePageState extends State<HomePage> {
 
     // inicializar FCM
     // indicar que muestre notificacionse cuando reciba el mensaje
-
+    
+    //Tarea7
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      AwesomeNotifications().createNotification(
+        content: NotificationContent(
+          id: 0,
+          channelKey: channelSimpleId,
+          title: message.notification!.title,
+          body: message.notification!.body,
+        ),
+      );
+      print("Firebase Token: ${FirebaseMessaging.instance.getToken()}");
+    });
     super.initState();
   }
 

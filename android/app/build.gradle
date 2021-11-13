@@ -26,6 +26,15 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
+dependencies {
+  // Import the Firebase BoM
+  implementation platform('com.google.firebase:firebase-bom:29.0.0')
+
+
+  // Add the dependencies for the desired Firebase products
+  // https://firebase.google.com/docs/android/setup#available-libraries
+}
+
 android {
     compileSdkVersion 30
 
